@@ -4,11 +4,12 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListene
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class HttpBasicAuthenticationListener implements ListenerInterface
 {
     public function handle(GetResponseEvent $event)
     {
-        // Here should be the code to retrieve the user info useful for authenticate him.
+        $event->setResponse(new Response('Error, you must be authenticated to display this page', 401));
     }
 }
