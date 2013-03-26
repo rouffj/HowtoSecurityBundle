@@ -8,6 +8,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 /**
  * Analyze each HTTP request of the application to check if an
  * AuthenticationListener can handle the current request.
+ *
+ * @author Joseph Rouff <rouffj@gmail.com>
  */
 class Firewall implements EventSubscriberInterface
 {
