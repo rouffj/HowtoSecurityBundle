@@ -4,6 +4,7 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\RequestMatcher;
 
 /**
  * Analyze each HTTP request of the application to check if an
@@ -24,7 +25,12 @@ class Firewall implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        // Here we can analyze every request made on application
+        foreach ($this->firewalls as $urlPattern => $authenticationListeners) {
+            $requestMatcher = new RequestMatcher($urlPattern);
+            if ($requestMatcher->matches($event->getRequest())) {
+                // Here should be code to execute when current request matches one of the firewalls
+            }
+        }
     }
 
     /**
