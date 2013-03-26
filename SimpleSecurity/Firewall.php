@@ -13,6 +13,15 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class Firewall implements EventSubscriberInterface
 {
+    private $firewalls;
+
+    public function __construct()
+    {
+        $this->firewalls = array(
+            '/howto-security/case1/admin/*' => array()
+        );
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
         // Here we can analyze every request made on application
