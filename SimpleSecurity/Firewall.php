@@ -4,6 +4,8 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\RequestMatcher;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Analyze each HTTP request of the application to check if an
@@ -13,9 +15,23 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class Firewall implements EventSubscriberInterface
 {
+    private $firewalls;
+
+    public function __construct()
+    {
+        $this->firewalls = array(
+            '/howto-security/case1/admin/*' => array()
+        );
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
-        // Here we can analyze every request made on application
+        foreach ($this->firewalls as $urlPattern => $authenticationListeners) {
+            $requestMatcher = new RequestMatcher($urlPattern);
+            if ($requestMatcher->matches($event->getRequest())) {
+                $event->setResponse(new Response('Error, you must be authenticated to display this page', 401));
+            }
+        }
     }
 
     /**
