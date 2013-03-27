@@ -5,7 +5,7 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RequestMatcher;
-use Symfony\Component\HttpFoundation\Response;
+use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\HttpBasicAuthenticationListener;
 
 /**
  * Analyze each HTTP request of the application to check if an
@@ -20,7 +20,7 @@ class Firewall implements EventSubscriberInterface
     public function __construct()
     {
         $this->firewalls = array(
-            '/howto-security/case1/admin/*' => array()
+            '/howto-security/case1/admin/*' => array(new HttpBasicAuthenticationListener())
         );
     }
 
@@ -29,7 +29,13 @@ class Firewall implements EventSubscriberInterface
         foreach ($this->firewalls as $urlPattern => $authenticationListeners) {
             $requestMatcher = new RequestMatcher($urlPattern);
             if ($requestMatcher->matches($event->getRequest())) {
-                $event->setResponse(new Response('Error, you must be authenticated to display this page', 401));
+                foreach ($authenticationListeners as $listener) {
+                    $listener->handle($event);
+
+                    if ($event->hasResponse()) {
+                        return;
+                    }
+                }
             }
         }
     }
