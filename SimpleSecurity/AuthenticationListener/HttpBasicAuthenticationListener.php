@@ -5,6 +5,7 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListene
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Token\LoginPasswordToken;
 
 class HttpBasicAuthenticationListener implements ListenerInterface
 {
@@ -16,5 +17,8 @@ class HttpBasicAuthenticationListener implements ListenerInterface
         if (null === $request->headers->get('PHP_AUTH_USER')) {
             $event->setResponse(new Response(null, 401, array('WWW-Authenticate' => 'Basic realm="insert realm"')));
         }
+
+        // We retrieve info required to authenticate current user from request and encapsulate them into a Token.
+        $token = new LoginPasswordToken($request->headers->get('PHP_AUTH_USER'), $request->headers->get('PHP_AUTH_PWD'));
     }
 }
