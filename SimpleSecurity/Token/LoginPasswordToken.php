@@ -8,7 +8,7 @@ class LoginPasswordToken extends AbstractToken
 {
     public function __construct($login, $password)
     {
-        $this->setUser((string)$login);
+        $this->setUser((string) $login);
         $this->credentials = $password;
     }
 
