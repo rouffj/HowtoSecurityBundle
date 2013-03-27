@@ -20,7 +20,7 @@ class Firewall implements EventSubscriberInterface
 
     public function __construct()
     {
-        $arrayProvider = new ArrayAuthenticationProvider(array('admin' => array('password' => 'adminpass', 'roles' => 'ROLE_ADMIN')));
+        $arrayProvider = new ArrayAuthenticationProvider(array('admin' => array('password' => 'adminpass', 'roles' => array('ROLE_ADMIN'))));
         $this->firewalls = array(
             '/howto-security/case1/admin/*' => array(new HttpBasicAuthenticationListener($arrayProvider))
         );

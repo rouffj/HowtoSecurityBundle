@@ -20,8 +20,8 @@ class ArrayAuthenticationProvider implements AuthenticationProviderInterface
 
     public function authenticate(TokenInterface $token)
     {
-        foreach ($this->users as $username => $password) {
-            if ($username === $token->getUser() && $password === $token->getCredentials()) {
+        foreach ($this->users as $username => $info) {
+            if ($username === $token->getUser() && $info['password'] === $token->getCredentials()) {
                 return new LoginPasswordToken($username, $info['password'], $info['roles']); // authenticated token
             }
         }
