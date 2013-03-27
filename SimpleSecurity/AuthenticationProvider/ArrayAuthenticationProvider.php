@@ -11,9 +11,20 @@ use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Token\LoginPasswordToken;
  */
 class ArrayAuthenticationProvider implements AuthenticationProviderInterface
 {
+    private $users;
+
+    public function __construct(array $users)
+    {
+        $this->users = $users;
+    }
+
     public function authenticate(TokenInterface $token)
     {
-        // Here the code which check if info in token matches authentication requirements
+        foreach ($this->users as $username => $info) {
+            if ($username === $token->getUser() && $info['password'] === $token->getCredentials()) {
+                return new LoginPasswordToken($username, $info['password'], $info['roles']); // authenticated token
+            }
+        }
     }
 
     public function supports(TokenInterface $token)
