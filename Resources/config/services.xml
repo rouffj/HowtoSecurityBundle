@@ -6,7 +6,10 @@
 
     <services>
         <service id="simple_security.firewall" class="Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Firewall">
+            <argument type="service" id="service_container" />
             <tag name="kernel.event_subscriber" />
+        </service>
+        <service id="simple_security.context" class="Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\SecurityContext">
         </service>
     </services>
 </container>
