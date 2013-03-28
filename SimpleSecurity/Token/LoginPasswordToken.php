@@ -6,9 +6,11 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class LoginPasswordToken extends AbstractToken
 {
-    public function __construct($login, $password)
+    public function __construct($login, $password, array $roles = array())
     {
-        $this->setUser($login);
+        parent::roles($roles);
+        parent::setAuthenticated(count($roles) > 0); // this avoid to mark a token authenticated in AuthenticationListener
+        $this->setUser((string) $login);
         $this->credentials = $password;
     }
 

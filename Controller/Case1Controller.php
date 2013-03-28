@@ -32,6 +32,6 @@ class Case1Controller extends Controller
      */
     public function adminAction()
     {
-        return array();
+        return array('security_context' => $this->get('simple_security.context'));
     }
 }
