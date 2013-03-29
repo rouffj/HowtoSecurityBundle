@@ -30,7 +30,7 @@ class HttpBasicAuthenticationListener implements ListenerInterface
 
         // if current request is NOT an authentication request, display HTTP login box.
         if (null === $request->headers->get('PHP_AUTH_USER')) {
-            $event->setResponse(new Response(null, 401, array('WWW-Authenticate' => 'Basic realm="insert realm"')));
+            $event->setResponse($this->authenticationEntryPoint->start($request));
         }
 
         // We retrieve info required to authenticate current user from request and encapsulate them into a Token.
