@@ -28,6 +28,11 @@ class HttpBasicAuthenticationListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
+        // if an other listener already authenticates the user, no need to pass in this AuthenticationListener
+        if ($this->securityContext->getToken()->isAuthenticated()) {
+            return;
+        }
+
         // if current request is NOT an authentication request, display HTTP login box.
         if (null === $request->headers->get('PHP_AUTH_USER')) {
             $event->setResponse($this->authenticationEntryPoint->start($request));
