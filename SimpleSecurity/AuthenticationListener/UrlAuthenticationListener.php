@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationEntryPoint\HttpBasicAuthenticationEntryPoint;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-class HttpBasicAuthenticationListener implements ListenerInterface
+class UrlAuthenticationListener implements ListenerInterface
 {
     private $authenticationProvider;
     private $securityContext;
@@ -28,18 +28,13 @@ class HttpBasicAuthenticationListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
-        // if an other listener already authenticates the user, no need to pass in this AuthenticationListener
-        if ($this->securityContext->getToken()->isAuthenticated()) {
-            return;
-        }
-
         // if current request is NOT an authentication request, display HTTP login box.
-        if (null === $request->headers->get('PHP_AUTH_USER')) {
+        if (null === $request->query->get('login') || null === $request->query->get('password')) {
             $event->setResponse($this->authenticationEntryPoint->start($request));
         }
 
         // We retrieve info required to authenticate current user from request and encapsulate them into a Token.
-        $token = new LoginPasswordToken($request->headers->get('PHP_AUTH_USER'), $request->headers->get('PHP_AUTH_PW'));
+        $token = new LoginPasswordToken($request->query->get('login'), $request->query->get('password'));
 
         try {
             $authenticatedToken = $this->authenticationProvider->authenticate($token);
