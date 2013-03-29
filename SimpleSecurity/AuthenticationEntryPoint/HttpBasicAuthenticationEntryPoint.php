@@ -14,5 +14,6 @@ class HttpBasicAuthenticationEntryPoint implements AuthenticationEntryPointInter
 {
     public function start(Request $request, AuthenticationException $authException = null)
     {
+        return new Response(null, 401, array('WWW-Authenticate' => 'Basic realm="You are accessing a restricted area"'));
     }
 }
