@@ -26,6 +26,21 @@ class UrlAuthenticationListener implements ListenerInterface
 
     public function handle(GetResponseEvent $event)
     {
-        // Here should be the code to retrieve the user info useful for authenticate him.
+        $request = $event->getRequest();
+
+        // if current request is NOT an authentication request, display HTTP login box.
+        if (null === $request->query->get('login') || null === $request->query->get('password')) {
+            $event->setResponse($this->authenticationEntryPoint->start($request));
+        }
+
+        // We retrieve info required to authenticate current user from request and encapsulate them into a Token.
+        $token = new LoginPasswordToken($request->query->get('login'), $request->query->get('password'));
+
+        try {
+            $authenticatedToken = $this->authenticationProvider->authenticate($token);
+            $this->securityContext->setToken($authenticatedToken);
+        } catch (AuthenticationException $e) {
+            $event->setResponse($this->authenticationEntryPoint->start($request, $e));
+        }
     }
 }
