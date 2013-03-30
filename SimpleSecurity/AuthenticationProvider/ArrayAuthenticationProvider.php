@@ -5,7 +5,6 @@ namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationProvide
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Token\LoginPasswordToken;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * This authentication provider can authenticate ONLY a LoginPasswordToken
@@ -26,8 +25,6 @@ class ArrayAuthenticationProvider implements AuthenticationProviderInterface
                 return new LoginPasswordToken($username, $info['password'], $info['roles']); // authenticated token
             }
         }
-
-        throw new AuthenticationException();
     }
 
     public function supports(TokenInterface $token)
