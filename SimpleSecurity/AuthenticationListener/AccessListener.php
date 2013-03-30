@@ -24,7 +24,14 @@ class AccessListener implements ListenerInterface
 
     public function handle(GetResponseEvent $event)
     {
-        // Check if current request match an url pattern of the access map,
-        // if yes we check if current user have roles required to display current page.
+        // We suppose at this step that current user is authenticated
+        foreach ($this->accessMap as $urlPattern => $rolesRequired) {
+            $requestMatcher = new RequestMatcher($urlPattern);
+            if ($requestMatcher->matches($event->getRequest())) {
+                if (!$this->accessDecisionManager->decide($this->securityContext->getToken(), $rolesRequired, $event->getRequest())) {
+                    throw new AccessDeniedException();
+                }
+            }
+        }
     }
 }
