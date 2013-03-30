@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RequestMatcher;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\HttpBasicAuthenticationListener;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\UrlAuthenticationListener;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationProvider\ArrayAuthenticationProvider;
+use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationProvider\MemberAuthenticationProvider;
 
 /**
  * Analyze each HTTP request of the application to check if an
@@ -22,11 +23,15 @@ class Firewall implements EventSubscriberInterface
 
     public function __construct(ContainerInterface $container)
     {
-        $arrayProvider = new ArrayAuthenticationProvider(array('admin' => array('password' => 'adminpass', 'roles' => array('ROLE_ADMIN'))));
+        $authenticationManager = new AuthenticationManager(array(
+            new ArrayAuthenticationProvider(array('admin' => array('password' => 'adminpass', 'roles' => array('ROLE_ADMIN')))),
+            new MemberAuthenticationProvider(array('member1', 'member2'))
+        ));
+
         $this->firewalls = array(
             '/howto-security/case1/admin/*' => array(
-                new UrlAuthenticationListener($arrayProvider, $container->get('simple_security.context')),
-                new HttpBasicAuthenticationListener($arrayProvider, $container->get('simple_security.context')),
+                new UrlAuthenticationListener($authenticationManager, $container->get('simple_security.context')),
+                new HttpBasicAuthenticationListener($authenticationManager, $container->get('simple_security.context')),
             )
         );
     }

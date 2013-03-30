@@ -6,10 +6,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Token\LoginPasswordToken;
 
-/**
- * This authentication provider can authenticate ONLY a LoginPasswordToken
- */
-class ArrayAuthenticationProvider implements AuthenticationProviderInterface
+class MemberAuthenticationProvider implements AuthenticationProviderInterface
 {
     private $users;
 
@@ -20,9 +17,10 @@ class ArrayAuthenticationProvider implements AuthenticationProviderInterface
 
     public function authenticate(TokenInterface $token)
     {
-        foreach ($this->users as $username => $info) {
-            if ($username === $token->getUser() && $info['password'] === $token->getCredentials()) {
-                return new LoginPasswordToken($username, $info['password'], $info['roles']); // authenticated token
+        foreach ($this->users as $username) {
+            $expectedPassword = $username.'symfony';
+            if ($username === $token->getUser() && $expectedPassword === $token->getCredentials()) {
+                return new LoginPasswordToken($username, $expectedPassword, array('ROLE_MEMBER')); // authenticated token
             }
         }
     }

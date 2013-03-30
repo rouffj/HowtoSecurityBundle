@@ -3,7 +3,7 @@
 namespace Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\Token\LoginPasswordToken;
@@ -13,13 +13,13 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class UrlAuthenticationListener implements ListenerInterface
 {
-    private $authenticationProvider;
+    private $authenticationManager;
     private $securityContext;
     private $authenticationEntryPoint;
 
-    public function __construct(AuthenticationProviderInterface $authenticationProvider, SecurityContextInterface $securityContext)
+    public function __construct(AuthenticationManagerInterface $authenticationManager, SecurityContextInterface $securityContext)
     {
-        $this->authenticationProvider = $authenticationProvider;
+        $this->authenticationManager = $authenticationManager;
         $this->securityContext = $securityContext;
         $this->authenticationEntryPoint = new HttpBasicAuthenticationEntryPoint();
     }
@@ -37,7 +37,7 @@ class UrlAuthenticationListener implements ListenerInterface
         $token = new LoginPasswordToken($request->query->get('login'), $request->query->get('password'));
 
         try {
-            $authenticatedToken = $this->authenticationProvider->authenticate($token);
+            $authenticatedToken = $this->authenticationManager->authenticate($token);
             $this->securityContext->setToken($authenticatedToken);
         } catch (AuthenticationException $e) {
             $event->setResponse($this->authenticationEntryPoint->start($request, $e));
