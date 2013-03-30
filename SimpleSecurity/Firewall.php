@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RequestMatcher;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\HttpBasicAuthenticationListener;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\UrlAuthenticationListener;
+use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationListener\AccessListener;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationProvider\ArrayAuthenticationProvider;
 use Rouffj\Bundle\HowtoSecurityBundle\SimpleSecurity\AuthenticationProvider\MemberAuthenticationProvider;
 
@@ -32,6 +33,7 @@ class Firewall implements EventSubscriberInterface
             '/howto-security/case1/admin/*' => array(
                 new UrlAuthenticationListener($authenticationManager, $container->get('simple_security.context')),
                 new HttpBasicAuthenticationListener($authenticationManager, $container->get('simple_security.context')),
+                new AccessListener(array('/howto-security/case1/admin/*' => array('ROLE_ADMIN')), $container->get('simple_security.context')),
             )
         );
     }
