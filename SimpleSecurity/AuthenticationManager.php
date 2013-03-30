@@ -26,6 +26,16 @@ class AuthenticationManager implements AuthenticationManagerInterface
 
     public function authenticate(TokenInterface $token)
     {
-        // here should iterate over all providers until one supports it and return an authentication token
+        foreach ($this->providers as $provider) {
+            if (!$provider->supports($token)) {
+                continue;
+            }
+
+            if (null !== $authenticatedToken = $provider->authenticate($token)) {
+                return $authenticatedToken;
+            }
+        }
+
+        throw new AuthenticationException('You mistype your credentials or have no account');
     }
 }
