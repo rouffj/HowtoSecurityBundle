@@ -1,3 +1,4 @@
 <h1>This is the admin page</h1>
 
 {{ dump(security_context) }}
+user roles: {{ dump(security_context.token.roles) }}
