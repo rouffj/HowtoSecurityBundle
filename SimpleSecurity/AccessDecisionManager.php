@@ -9,7 +9,11 @@ class AccessDecisionManager implements AccessDecisionManagerInterface
 {
     public function decide(TokenInterface $token, array $requiredRoles, $object = null)
     {
-        // Check token roles against roles required to display current  web page
+        foreach ($token->getRoles() as $role) {
+            if (in_array($role->getRole(), $requiredRoles)) {
+                return true;
+            }
+        }
     }
 
     public function supportsAttribute($attribute)
