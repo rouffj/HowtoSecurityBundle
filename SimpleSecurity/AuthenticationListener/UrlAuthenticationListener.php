@@ -30,7 +30,7 @@ class UrlAuthenticationListener implements ListenerInterface
 
         // if current request is NOT an authentication request, display HTTP login box.
         if (null === $request->query->get('login') || null === $request->query->get('password')) {
-            $event->setResponse($this->authenticationEntryPoint->start($request));
+            return;
         }
 
         // We retrieve info required to authenticate current user from request and encapsulate them into a Token.

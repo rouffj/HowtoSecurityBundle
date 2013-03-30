@@ -29,7 +29,7 @@ class HttpBasicAuthenticationListener implements ListenerInterface
         $request = $event->getRequest();
 
         // if an other listener already authenticates the user, no need to pass in this AuthenticationListener
-        if ($this->securityContext->getToken()->isAuthenticated()) {
+        if ($this->securityContext->getToken() && $this->securityContext->getToken()->isAuthenticated()) {
             return;
         }
 
